@@ -21,11 +21,7 @@ class MainActivity : ComponentActivity() {
         Ingredient("Fresh Lime Juice", 15.0, IngredientUnit.ML),
         Ingredient("Cranberry Juice", 30.0, IngredientUnit.ML),
         Ingredient("Orange Zest", 2.0, IngredientUnit.GRAM),
-        Ingredient("Citron Vodka", 40.0, IngredientUnit.ML),
-        Ingredient("Cointreau (Orange Liqueur)", 15.0, IngredientUnit.ML),
-        Ingredient("Fresh Lime Juice", 15.0, IngredientUnit.ML),
-        Ingredient("Cranberry Juice", 30.0, IngredientUnit.ML),
-        Ingredient("Orange Zest", 2.0, IngredientUnit.GRAM)
+        Ingredient("Citron Vodka", 40.0, IngredientUnit.ML)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +35,8 @@ class MainActivity : ComponentActivity() {
                         "Cosmopolitan",
                         listOf<Category>(Category.ALCOHOLIC, Category.COLD),
                         GlassType.SMALL,
-                        cosmopolitanIngredients
+                        cosmopolitanIngredients,
+                        "Description how to prepare the cocktail very very very very very very long description to span multiple lines to test scrolling"
                     )
                 }
             }

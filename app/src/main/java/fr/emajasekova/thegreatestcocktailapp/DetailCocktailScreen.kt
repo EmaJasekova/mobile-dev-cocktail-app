@@ -1,9 +1,9 @@
 package fr.emajasekova.thegreatestcocktailapp
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,8 +17,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,7 +36,8 @@ fun DetailCocktailScreen(modifier: Modifier,
                          drinkName: String,
                          categories: List<Category>,
                          glassType: GlassType,
-                         ingredients: List<Ingredient>){
+                         ingredients: List<Ingredient>,
+                         preparation: String){
     val padding = 16.dp
     Box(
         Modifier.background(
@@ -47,6 +48,8 @@ fun DetailCocktailScreen(modifier: Modifier,
                 )
             )
         ).fillMaxSize()) {
+            TopIcons()
+
             Column(modifier = modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -59,10 +62,43 @@ fun DetailCocktailScreen(modifier: Modifier,
                 Spacer(Modifier.size(padding))
                 GlassTypeView(glassType)
 
-                Spacer(Modifier.size(padding))
-                Ingredients(ingredients)
+                Column(
+                    Modifier
+                        .verticalScroll(rememberScrollState())
+                        .width(350.dp)
+                ) {
+                    Spacer(Modifier.size(padding))
+                    Ingredients(ingredients)
+
+                    Spacer(Modifier.size(padding))
+                    Preparation(preparation)
+                }
             }
         }
+}
+
+@Composable
+fun TopIcons() {
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
+    ) {
+        ButtonWithIcon(R.drawable.reload, "reload", {})
+        ButtonWithIcon(R.drawable.heart, "heart", {})
+    }
+}
+
+@Composable
+fun ButtonWithIcon(iconId: Int, iconDescription: String, onClick: () -> Unit) {
+    ElevatedButton(onClick = { onClick() }) {
+        Icon(
+            painter = painterResource(iconId),
+            contentDescription = iconDescription,
+            modifier = Modifier
+                .width(30.dp)
+                .height(30.dp)
+        )
+    }
 }
 
 @Composable
@@ -142,6 +178,7 @@ fun Categories(categories: List<Category>) {
 fun IngredientView(ingredient: Ingredient) {
     Row() {
         Text(ingredient.name)
+
         Text(ingredient.amount.toString())
         Text(ingredient.unit.name)
     }
@@ -152,12 +189,12 @@ fun Ingredients(ingredients: List<Ingredient>) {
     val padding = 10.dp
     Column() {
         Card(Modifier
-            .clip(CircleShape)
-            .border(
-                2.dp,
-                colorResource(R.color.white)
-            )
-            .verticalScroll(rememberScrollState())
+//            .border(
+//                2.dp,
+//                colorResource(R.color.white)
+//            )
+//            .verticalScroll(rememberScrollState())
+            .fillMaxWidth()
         ) {
             Text("Ingredients")
 
@@ -166,6 +203,23 @@ fun Ingredients(ingredients: List<Ingredient>) {
                 Spacer(Modifier.size(padding))
                 IngredientView(ingredient)
             }
+        }
+    }
+}
+
+@Composable
+fun Preparation(preparation: String) {
+    val padding = 10.dp
+    Column() {
+        Card(Modifier
+//            .border(
+//                2.dp,
+//                colorResource(R.color.white)
+//            )
+//            .verticalScroll(rememberScrollState())
+            .fillMaxWidth()
+        ) {
+            Text(preparation)
         }
     }
 }
