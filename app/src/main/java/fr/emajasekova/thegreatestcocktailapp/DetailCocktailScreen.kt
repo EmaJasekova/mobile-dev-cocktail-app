@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -32,49 +33,57 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun DetailCocktailScreen(modifier: Modifier,
-                         drinkName: String,
-                         categories: List<Category>,
-                         glassType: GlassType,
-                         ingredients: List<Ingredient>,
-                         preparation: String){
-    val padding = 16.dp
+fun DetailCocktailScreen(
+    modifier: Modifier,
+    drinkName: String,
+    categories: List<Category>,
+    glassType: GlassType,
+    ingredients: List<Ingredient>,
+    preparation: String
+) {
+    val padding = 20.dp
     Box(
-        Modifier.background(
-            brush = Brush.verticalGradient(
-                listOf(
-                    colorResource(R.color.black),
-                    colorResource(R.color.purple_700)
+        Modifier
+            .background(
+                brush = Brush.verticalGradient(
+                    listOf(
+                        colorResource(R.color.black),
+                        colorResource(R.color.purple_700)
+                    )
                 )
             )
-        ).fillMaxSize()) {
-            TopIcons()
+            .fillMaxSize()
+    ) {
+        TopIcons() // TODO move to app top bar
 
-            Column(modifier = modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Spacer(Modifier.size(padding * 2))
+            DrinkView(drinkName)
+
+            Spacer(Modifier.size(padding))
+            Categories(categories)
+
+            Spacer(Modifier.size(padding))
+            GlassTypeView(glassType)
+            Spacer(Modifier.size(padding))
+
+            Column(
+                Modifier
+                    .verticalScroll(rememberScrollState())
+                    .width(350.dp)
+            ) {
+                Spacer(Modifier.size(padding))
+                Ingredients(ingredients)
 
                 Spacer(Modifier.size(padding))
-                DrinkView(drinkName)
-
-                Spacer(Modifier.size(padding))
-                Categories(categories)
-
-                Spacer(Modifier.size(padding))
-                GlassTypeView(glassType)
-
-                Column(
-                    Modifier
-                        .verticalScroll(rememberScrollState())
-                        .width(350.dp)
-                ) {
-                    Spacer(Modifier.size(padding))
-                    Ingredients(ingredients)
-
-                    Spacer(Modifier.size(padding))
-                    Preparation(preparation)
-                }
+                Preparation(preparation)
             }
         }
+    }
 }
 
 @Composable
@@ -95,8 +104,8 @@ fun ButtonWithIcon(iconId: Int, iconDescription: String, onClick: () -> Unit) {
             painter = painterResource(iconId),
             contentDescription = iconDescription,
             modifier = Modifier
-                .width(30.dp)
-                .height(30.dp)
+                .width(25.dp)
+                .height(25.dp)
         )
     }
 }
@@ -141,21 +150,23 @@ fun GlassTypeView(glassType: GlassType) {
 
 @Composable
 fun CategoryView(category: Category) {
-    Box(Modifier
-        .clip(CircleShape)
-        .border(
-            2.dp,
-            colorResource(R.color.white),
-            CircleShape
-        )
-        .background(
-        Brush.horizontalGradient(
-            listOf(
-                colorResource(R.color.teal_200),
-                colorResource(R.color.teal_700)
+    Box(
+        Modifier
+            .clip(CircleShape)
+            .border(
+                2.dp,
+                colorResource(R.color.white),
+                CircleShape
             )
-        )
-    )) {
+            .background(
+                Brush.horizontalGradient(
+                    listOf(
+                        colorResource(R.color.teal_200),
+                        colorResource(R.color.teal_700)
+                    )
+                )
+            )
+    ) {
 
         Text(
             category.name,
@@ -178,7 +189,6 @@ fun Categories(categories: List<Category>) {
 fun IngredientView(ingredient: Ingredient) {
     Row() {
         Text(ingredient.name)
-
         Text(ingredient.amount.toString())
         Text(ingredient.unit.name)
     }
@@ -188,20 +198,22 @@ fun IngredientView(ingredient: Ingredient) {
 fun Ingredients(ingredients: List<Ingredient>) {
     val padding = 10.dp
     Column() {
-        Card(Modifier
+        Card(
+            Modifier
 //            .border(
 //                2.dp,
 //                colorResource(R.color.white)
 //            )
 //            .verticalScroll(rememberScrollState())
-            .fillMaxWidth()
+                .fillMaxWidth()
         ) {
-            Text("Ingredients")
-
+            Text(
+                text = "Ingredients",
+                modifier = Modifier.padding(15.dp),
+            )
             ingredients.forEach { ingredient ->
-
-                Spacer(Modifier.size(padding))
                 IngredientView(ingredient)
+                Spacer(Modifier.size(padding))
             }
         }
     }
@@ -211,15 +223,19 @@ fun Ingredients(ingredients: List<Ingredient>) {
 fun Preparation(preparation: String) {
     val padding = 10.dp
     Column() {
-        Card(Modifier
+        Card(
+            Modifier
 //            .border(
 //                2.dp,
 //                colorResource(R.color.white)
 //            )
 //            .verticalScroll(rememberScrollState())
-            .fillMaxWidth()
+                .fillMaxWidth()
         ) {
-            Text(preparation)
+            Text(
+                text = preparation,
+                modifier = Modifier.padding(15.dp)
+            )
         }
     }
 }
