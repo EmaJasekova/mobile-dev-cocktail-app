@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import fr.emajasekova.thegreatestcocktailapp.screens.CocktailsScreen
 import fr.emajasekova.thegreatestcocktailapp.ui.theme.TheGreatestCocktailAppTheme
 
 class CocktailsActivity : ComponentActivity() {
