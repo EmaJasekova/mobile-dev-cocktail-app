@@ -16,32 +16,13 @@ import fr.emajasekova.thegreatestcocktailapp.screens.DetailCocktailScreen
 import fr.emajasekova.thegreatestcocktailapp.ui.theme.TheGreatestCocktailAppTheme
 
 class MainActivity : ComponentActivity() {
-    val cosmopolitanIngredients = listOf(
-        Ingredient("Citron Vodka", 40.0, IngredientUnit.ML),
-        Ingredient("Cointreau (Orange Liqueur)", 15.0, IngredientUnit.ML),
-        Ingredient("Fresh Lime Juice", 15.0, IngredientUnit.ML),
-        Ingredient("Cranberry Juice", 30.0, IngredientUnit.ML),
-        Ingredient("Orange Zest", 2.0, IngredientUnit.GRAM),
-        Ingredient("Citron Vodka", 40.0, IngredientUnit.ML)
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             TheGreatestCocktailAppTheme {
-                Scaffold(
-                    modifier = Modifier.Companion.fillMaxSize()
-                ) { innerPadding ->
-                    DetailCocktailScreen(
-                        modifier = Modifier.Companion.padding(innerPadding),
-                        "Cosmopolitan",
-                        listOf<Category>(Category.ALCOHOLIC, Category.COLD),
-                        GlassType.SMALL,
-                        cosmopolitanIngredients,
-                        "Description how to prepare the cocktail very very very very very very long description to span multiple lines to test scrolling"
-                    )
-                }
+
             }
         }
     }
