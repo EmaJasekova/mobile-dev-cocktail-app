@@ -20,8 +20,8 @@ class CocktailsActivity : ComponentActivity() {
 
         setContent {
             TheGreatestCocktailAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) {
-                    innerPadding -> CocktailsScreen(Modifier.padding(innerPadding))
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    CocktailsScreen(Modifier.padding(innerPadding))
                 }
             }
         }

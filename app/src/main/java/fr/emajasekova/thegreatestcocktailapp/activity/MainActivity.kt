@@ -23,8 +23,13 @@ import androidx.navigation.compose.rememberNavController
 import fr.emajasekova.thegreatestcocktailapp.R
 import fr.emajasekova.thegreatestcocktailapp.components.TabBarItem
 import fr.emajasekova.thegreatestcocktailapp.models.Category
+import fr.emajasekova.thegreatestcocktailapp.models.GlassType
+import fr.emajasekova.thegreatestcocktailapp.models.Ingredient
+import fr.emajasekova.thegreatestcocktailapp.models.IngredientUnit
 import fr.emajasekova.thegreatestcocktailapp.screens.navigation.BottomBar
 import fr.emajasekova.thegreatestcocktailapp.screens.CategoriesScreen
+import fr.emajasekova.thegreatestcocktailapp.screens.DetailCocktailScreen
+import fr.emajasekova.thegreatestcocktailapp.screens.FavouritesScreen
 import fr.emajasekova.thegreatestcocktailapp.screens.navigation.TopBar
 
 import fr.emajasekova.thegreatestcocktailapp.ui.theme.TheGreatestCocktailAppTheme
@@ -59,6 +64,15 @@ class MainActivity : ComponentActivity() {
 
             val tabItems = listOf(randomItem, categoryItem, favouriteItem)
 
+            val cosmopolitanIngredients = listOf(
+                Ingredient("Citron Vodka", 40.0, IngredientUnit.ML),
+                Ingredient("Cointreau (Orange Liqueur)", 15.0, IngredientUnit.ML),
+                Ingredient("Fresh Lime Juice", 15.0, IngredientUnit.ML),
+                Ingredient("Cranberry Juice", 30.0, IngredientUnit.ML),
+                Ingredient("Orange Zest", 2.0, IngredientUnit.GRAM),
+                Ingredient("Citron Vodka", 40.0, IngredientUnit.ML)
+            )
+
             TheGreatestCocktailAppTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -67,7 +81,14 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(navController, startDestination = randomItem.title) {
                         composable(randomItem.title) {
-
+                            DetailCocktailScreen(
+                                modifier = Modifier.padding(innerPadding),
+                                "Cosmopolitan",
+                                listOf(Category.ALCOHOLIC, Category.COLD),
+                                GlassType.SMALL,
+                                cosmopolitanIngredients,
+                                "Description how to prepare the cocktail very very very very very very long description to span multiple lines to test scrolling"
+                            )
                         }
                         composable(categoryItem.title) {
                             CategoriesScreen(
@@ -76,7 +97,9 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(favouriteItem.title) {
-
+                            FavouritesScreen(
+                                Modifier.padding(innerPadding)
+                            )
                         }
                     }
                 }

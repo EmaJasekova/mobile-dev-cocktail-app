@@ -37,7 +37,7 @@ class DetailCocktailActivity : ComponentActivity() {
                     DetailCocktailScreen(
                         modifier = Modifier.padding(innerPadding),
                         "Cosmopolitan",
-                        listOf<Category>(Category.ALCOHOLIC, Category.COLD),
+                        listOf(Category.ALCOHOLIC, Category.COLD),
                         GlassType.SMALL,
                         cosmopolitanIngredients,
                         "Description how to prepare the cocktail very very very very very very long description to span multiple lines to test scrolling"

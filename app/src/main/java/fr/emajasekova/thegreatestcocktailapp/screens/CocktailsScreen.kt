@@ -19,6 +19,7 @@ import fr.emajasekova.thegreatestcocktailapp.activity.DetailCocktailActivity
 fun CocktailsScreen(modifier: Modifier) {
     val cocktails = listOf("Cosmopolitan", "Pinacolada")
     val context = LocalContext.current
+
     LazyColumn(modifier
         .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)) {
