@@ -1,4 +1,4 @@
-package fr.emajasekova.thegreatestcocktailapp
+package fr.emajasekova.thegreatestcocktailapp.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,6 +31,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fr.emajasekova.thegreatestcocktailapp.models.Category
+import fr.emajasekova.thegreatestcocktailapp.models.GlassType
+import fr.emajasekova.thegreatestcocktailapp.models.Ingredient
+import fr.emajasekova.thegreatestcocktailapp.R
 
 @Composable
 fun DetailCocktailScreen(
@@ -54,7 +58,7 @@ fun DetailCocktailScreen(
             )
             .fillMaxSize()
     ) {
-        TopIcons() // TODO move to app top bar
+        TopIcons()
 
         Column(
             modifier = modifier.fillMaxWidth(),

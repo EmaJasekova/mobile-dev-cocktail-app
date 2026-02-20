@@ -1,18 +1,18 @@
-package fr.emajasekova.thegreatestcocktailapp
+package fr.emajasekova.thegreatestcocktailapp.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import fr.emajasekova.thegreatestcocktailapp.models.Category
+import fr.emajasekova.thegreatestcocktailapp.models.GlassType
+import fr.emajasekova.thegreatestcocktailapp.models.Ingredient
+import fr.emajasekova.thegreatestcocktailapp.models.IngredientUnit
+import fr.emajasekova.thegreatestcocktailapp.screens.DetailCocktailScreen
 import fr.emajasekova.thegreatestcocktailapp.ui.theme.TheGreatestCocktailAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,11 +30,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TheGreatestCocktailAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()
-//                    topBar = TopAppBar()
-                    ) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.Companion.fillMaxSize()
+                ) { innerPadding ->
                     DetailCocktailScreen(
-                        modifier = Modifier.padding(innerPadding),
+                        modifier = Modifier.Companion.padding(innerPadding),
                         "Cosmopolitan",
                         listOf<Category>(Category.ALCOHOLIC, Category.COLD),
                         GlassType.SMALL,
@@ -44,21 +44,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Row(modifier = modifier) {
-        Text("Hello $name!")
-        Text("Hello Isen")
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TheGreatestCocktailAppTheme {
-        Greeting("Android")
     }
 }
