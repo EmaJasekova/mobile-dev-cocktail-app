@@ -12,7 +12,7 @@ data class CategoryListResponse(
     val categories: List<Category>?
 )
 
-data class DrinkFilterResponse(
+data class CocktailFilterResponse(
     @SerializedName("drinks")
     val cocktailPreviews: List<CocktailPreview>?
 )
