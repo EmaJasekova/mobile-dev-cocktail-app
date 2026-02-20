@@ -1,3 +1,8 @@
 package fr.emajasekova.thegreatestcocktailapp.dataClasses
 
-data class Category()
+import com.google.gson.annotations.SerializedName
+
+data class Category(
+    @SerializedName("strCategory")
+    val strCategory: String?
+)
