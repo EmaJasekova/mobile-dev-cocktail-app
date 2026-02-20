@@ -17,9 +17,8 @@ class CocktailsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        Log.d("LifeCycle", "DrinksActivity onCreate")
+
         setContent {
-            val context = LocalContext.current
             TheGreatestCocktailAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
                     innerPadding -> CocktailsScreen(Modifier.padding(innerPadding))
