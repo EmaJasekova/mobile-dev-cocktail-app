@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import fr.emajasekova.thegreatestcocktailapp.R
 import fr.emajasekova.thegreatestcocktailapp.dataClasses.Cocktail
+import fr.emajasekova.thegreatestcocktailapp.dataClasses.Ingredient
+import fr.emajasekova.thegreatestcocktailapp.dataClasses.toCocktail
 import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
 import fr.emajasekova.thegreatestcocktailapp.network.ApiClient
 
@@ -62,13 +64,13 @@ fun DetailCocktailScreen(
     modifier: Modifier,
 ) {
     val state = loadCocktail(drinkId) {
-        ApiClient.retrofit.getDetailCocktail(drinkId).cocktails?.firstOrNull()
+        ApiClient.retrofit.getDetailCocktail(drinkId).cocktails?.firstOrNull()?.toCocktail()
     }
 
     LaunchedEffect(state.cocktail) {
         state.cocktail?.let {
             onComposing(AppBarState(
-                title = it.strCocktail ?: "",
+                title = it.name,
                 actions = { DetailCocktailTopButton(state.cocktail) }
             ))
         }
@@ -103,13 +105,13 @@ fun CocktailDetailContent(
                 verticalArrangement = Arrangement.Top
             ) {
                 Spacer(Modifier.size(padding))
-                DrinkView(cocktail.strCocktail ?: "", cocktail.strDrinkThumb)
+                DrinkView(cocktail.name, cocktail.thumbnailUrl)
 
                 Spacer(Modifier.size(padding))
-                Categories(listOfNotNull(cocktail.strCategory, cocktail.strAlcoholic))
+                Categories(listOfNotNull(cocktail.category, cocktail.alcoholic))
 
                 Spacer(Modifier.size(12.dp))
-                GlassTypeView(cocktail.strGlass ?: "")
+                GlassTypeView(cocktail.glass ?: "")
                 Spacer(Modifier.size(8.dp))
 
                 Column(
@@ -118,10 +120,10 @@ fun CocktailDetailContent(
                         .width(350.dp)
                 ) {
                     Spacer(Modifier.size(padding))
-                    Ingredients(cocktail.ingredientList())
+                    Ingredients(cocktail.ingredients)
 
                     Spacer(Modifier.size(padding))
-                    Preparation(cocktail.strInstructions ?: "")
+                    Preparation(cocktail.instructions ?: "")
                     Spacer(Modifier.size(padding))
                 }
             }
@@ -199,7 +201,7 @@ fun Categories(categories: List<String>) {
 }
 
 @Composable
-fun IngredientRow(ingredient: Pair<String, String>) {
+fun IngredientRow(ingredient: Ingredient) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -208,12 +210,12 @@ fun IngredientRow(ingredient: Pair<String, String>) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            ingredient.first,
+            ingredient.name,
             color = MaterialTheme.colorScheme.onSurface,
             fontSize = 15.sp
         )
         Text(
-            ingredient.second,
+            ingredient.measure,
             color = MaterialTheme.colorScheme.primary,
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium
@@ -222,7 +224,7 @@ fun IngredientRow(ingredient: Pair<String, String>) {
 }
 
 @Composable
-fun Ingredients(ingredients: List<Pair<String, String>>) {
+fun Ingredients(ingredients: List<Ingredient>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),

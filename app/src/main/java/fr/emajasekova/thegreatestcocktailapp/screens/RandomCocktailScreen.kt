@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import fr.emajasekova.thegreatestcocktailapp.dataClasses.Cocktail
+import fr.emajasekova.thegreatestcocktailapp.dataClasses.toCocktail
 import fr.emajasekova.thegreatestcocktailapp.managers.FavoritesManager
 import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
 import fr.emajasekova.thegreatestcocktailapp.network.ApiClient
@@ -21,7 +22,7 @@ import fr.emajasekova.thegreatestcocktailapp.network.ApiClient
 @Composable
 fun RandomCocktailScreen(modifier: Modifier, onComposing: (AppBarState) -> Unit) {
     val state = loadCocktail(Unit) {
-        ApiClient.retrofit.getRandomCocktail().cocktails?.firstOrNull()
+        ApiClient.retrofit.getRandomCocktail().cocktails?.firstOrNull()?.toCocktail()
     }
 
     LaunchedEffect(state.cocktail) {
@@ -43,9 +44,9 @@ fun RandomCocktailScreen(modifier: Modifier, onComposing: (AppBarState) -> Unit)
 @Composable
 fun DetailCocktailTopButton(cocktail: Cocktail?) {
     val context = LocalContext.current
-    var isFavorite by remember(cocktail?.idCocktail) {
+    var isFavorite by remember(cocktail?.id) {
         mutableStateOf(
-            cocktail?.idCocktail?.let { FavoritesManager.isFavorite(context, it) } ?: false
+            cocktail?.id?.let { FavoritesManager.isFavorite(context, it) } ?: false
         )
     }
 

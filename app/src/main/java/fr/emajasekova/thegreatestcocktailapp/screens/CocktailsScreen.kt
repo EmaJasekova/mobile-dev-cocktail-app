@@ -39,6 +39,7 @@ import fr.emajasekova.thegreatestcocktailapp.R
 import fr.emajasekova.thegreatestcocktailapp.activity.DetailCocktailActivity
 import fr.emajasekova.thegreatestcocktailapp.dataClasses.CocktailFilterResponse
 import fr.emajasekova.thegreatestcocktailapp.dataClasses.CocktailPreview
+import fr.emajasekova.thegreatestcocktailapp.dataClasses.toCocktailPreview
 import fr.emajasekova.thegreatestcocktailapp.network.ApiClient
 import retrofit2.Call
 import retrofit2.Response
@@ -56,7 +57,9 @@ fun CocktailsScreen(modifier: Modifier, category: String) {
                 call: Call<CocktailFilterResponse?>?,
                 response: Response<CocktailFilterResponse?>?
             ) {
-                cocktails = response?.body()?.cocktailPreviews ?: emptyList()
+                cocktails = response?.body()?.cocktailPreviews
+                    ?.mapNotNull { it.toCocktailPreview() }
+                    ?: emptyList()
                 loading = false
             }
 
@@ -86,7 +89,7 @@ fun CocktailsScreen(modifier: Modifier, category: String) {
                 items(cocktails) { cocktail ->
                     CocktailListCard(cocktail) {
                         val intent = Intent(context, DetailCocktailActivity::class.java)
-                        intent.putExtra(DetailCocktailActivity.DRINKID, cocktail.idDrink)
+                        intent.putExtra(DetailCocktailActivity.DRINKID, cocktail.id)
                         context.startActivity(intent)
                     }
                 }
@@ -113,8 +116,8 @@ private fun CocktailListCard(cocktail: CocktailPreview, onClick: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             AsyncImage(
-                model = cocktail.strDrinkThumb,
-                contentDescription = cocktail.strDrink,
+                model = cocktail.thumbnailUrl,
+                contentDescription = cocktail.name,
                 placeholder = painterResource(R.drawable.cosmopolitan),
                 error = painterResource(R.drawable.cosmopolitan),
                 modifier = Modifier
@@ -122,7 +125,7 @@ private fun CocktailListCard(cocktail: CocktailPreview, onClick: () -> Unit) {
                     .clip(CircleShape)
             )
             Text(
-                text = cocktail.strDrink ?: "",
+                text = cocktail.name,
                 modifier = Modifier.weight(1f),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,

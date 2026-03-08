@@ -27,17 +27,16 @@ object FavoritesManager {
         getFavorites(context).any { it.idDrink == drinkId }
 
     fun toggleFavorite(context: Context, cocktail: Cocktail) {
-        val id = cocktail.idCocktail ?: return
         val favorites = getFavorites(context).toMutableList()
-        val index = favorites.indexOfFirst { it.idDrink == id }
+        val index = favorites.indexOfFirst { it.idDrink == cocktail.id }
         if (index >= 0) {
             favorites.removeAt(index)
         } else {
             favorites.add(
                 FavoriteCocktail(
-                    idDrink = id,
-                    strDrink = cocktail.strCocktail ?: "",
-                    strDrinkThumb = cocktail.strDrinkThumb
+                    idDrink = cocktail.id,
+                    strDrink = cocktail.name,
+                    strDrinkThumb = cocktail.thumbnailUrl
                 )
             )
         }

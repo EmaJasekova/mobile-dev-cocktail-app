@@ -1,7 +1,6 @@
 package fr.emajasekova.thegreatestcocktailapp.dataClasses
 
-data class CocktailPreview(
-    val id: String,
+data class Ingredient(
     val name: String,
-    val thumbnailUrl: String?,
+    val measure: String,
 )

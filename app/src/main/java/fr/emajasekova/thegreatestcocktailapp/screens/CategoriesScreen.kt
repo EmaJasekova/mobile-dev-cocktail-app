@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.emajasekova.thegreatestcocktailapp.activity.CocktailsActivity
 import fr.emajasekova.thegreatestcocktailapp.dataClasses.Category
+import fr.emajasekova.thegreatestcocktailapp.dataClasses.toCategory
 import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
 import fr.emajasekova.thegreatestcocktailapp.network.ApiClient
 
@@ -40,7 +41,9 @@ fun CategoriesScreen(modifier: Modifier, onComposing: (AppBarState) -> Unit) {
     val state = produceState(initialValue = CategoriesState()) {
         value = try {
             CategoriesState(
-                categories = ApiClient.retrofit.getCategories().categories.orEmpty(),
+                categories = ApiClient.retrofit.getCategories().categories
+                    .orEmpty()
+                    .mapNotNull { it.toCategory() },
                 loading = false
             )
         } catch (e: Exception) {
@@ -73,10 +76,10 @@ fun CategoriesScreen(modifier: Modifier, onComposing: (AppBarState) -> Unit) {
             ) {
                 items(state.categories) { category ->
                     CategoryListCard(
-                        name = category.strCategory ?: return@items,
+                        name = category.name,
                         onClick = {
                             val intent = Intent(context, CocktailsActivity::class.java)
-                            intent.putExtra(CocktailsActivity.CATEGORY, category.strCategory)
+                            intent.putExtra(CocktailsActivity.CATEGORY, category.name)
                             context.startActivity(intent)
                         }
                     )
