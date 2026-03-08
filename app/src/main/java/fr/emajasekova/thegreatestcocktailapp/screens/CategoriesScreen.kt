@@ -25,6 +25,7 @@ fun CategoriesScreen(modifier: Modifier, categories: List<Category>) {
         items(categories) { category ->
             Card(Modifier.clickable {
                 val intent = Intent(context, CocktailsActivity::class.java)
+                intent.putExtra(CocktailsActivity.CATEGORY, category.name)
                 context.startActivity(intent)
             }) {
                 Text("$category",

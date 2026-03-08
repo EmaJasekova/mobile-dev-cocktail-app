@@ -1,6 +1,5 @@
 package fr.emajasekova.thegreatestcocktailapp.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -18,12 +17,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,13 +32,24 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import androidx.compose.ui.unit.sp
-import fr.emajasekova.thegreatestcocktailapp.models.Category
-import fr.emajasekova.thegreatestcocktailapp.models.GlassType
-import fr.emajasekova.thegreatestcocktailapp.models.Ingredient
 import fr.emajasekova.thegreatestcocktailapp.R
 import fr.emajasekova.thegreatestcocktailapp.dataClasses.Cocktail
 import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
+import fr.emajasekova.thegreatestcocktailapp.network.ApiClient
+
+data class CocktailState(val cocktail: Cocktail? = null, val loading: Boolean = true)
+
+@Composable
+fun loadCocktail(key: Any, fetch: suspend () -> Cocktail?): CocktailState =
+    produceState(initialValue = CocktailState(), key1 = key) {
+        value = try {
+            CocktailState(cocktail = fetch(), loading = false)
+        } catch (e: Exception) {
+            CocktailState(loading = false)
+        }
+    }.value
 
 @Composable
 fun DetailCocktailScreen(
@@ -46,11 +57,33 @@ fun DetailCocktailScreen(
     onComposing: (AppBarState) -> Unit,
     modifier: Modifier,
 ) {
-    var drink = remember { mutableStateOf<Cocktail?>(null) }
+    val state = loadCocktail(drinkId) {
+        ApiClient.retrofit.getDetailCocktail(drinkId).cocktails?.firstOrNull()
+    }
 
+    LaunchedEffect(state.cocktail) {
+        state.cocktail?.let { onComposing(AppBarState(title = it.strCocktail ?: "")) }
+    }
+
+    CocktailDetailContent(
+        cocktail = state.cocktail,
+        loading = state.loading,
+        modifier = modifier,
+        overlayContent = { TopIcons() }
+    )
+}
+
+@Composable
+fun CocktailDetailContent(
+    cocktail: Cocktail?,
+    loading: Boolean,
+    modifier: Modifier = Modifier,
+    overlayContent: @Composable () -> Unit = {},
+) {
     val padding = 20.dp
+
     Box(
-        Modifier
+        modifier
             .background(
                 brush = Brush.verticalGradient(
                     listOf(
@@ -59,35 +92,40 @@ fun DetailCocktailScreen(
                     )
                 )
             )
-            .fillMaxSize()
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        TopIcons()
+        overlayContent()
 
-        Column(
-            modifier = modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Spacer(Modifier.size(padding * 2))
-            DrinkView(drinkName)
-
-            Spacer(Modifier.size(padding))
-            Categories(categories)
-
-            Spacer(Modifier.size(padding))
-            GlassTypeView(glassType)
-            Spacer(Modifier.size(padding))
-
-            Column(
-                Modifier
-                    .verticalScroll(rememberScrollState())
-                    .width(350.dp)
+        when {
+            loading -> CircularProgressIndicator()
+            cocktail != null -> Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
             ) {
                 Spacer(Modifier.size(padding))
-                Ingredients(ingredients)
+                DrinkView(cocktail.strCocktail ?: "", cocktail.strDrinkThumb)
 
                 Spacer(Modifier.size(padding))
-                Preparation(preparation)
+                Categories(listOfNotNull(cocktail.strCategory, cocktail.strAlcoholic))
+
+                Spacer(Modifier.size(padding))
+                GlassTypeView(cocktail.strGlass ?: "")
+                Spacer(Modifier.size(8.dp))
+
+                Column(
+                    Modifier
+                        .verticalScroll(rememberScrollState())
+                        .width(350.dp)
+                ) {
+                    Spacer(Modifier.size(padding))
+                    Ingredients(cocktail.ingredientList())
+
+                    Spacer(Modifier.size(padding))
+                    Preparation(cocktail.strInstructions ?: "")
+                    Spacer(Modifier.size(padding))
+                }
             }
         }
     }
@@ -118,53 +156,46 @@ fun ButtonWithIcon(iconId: Int, iconDescription: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun DrinkView(drinkName: String) {
-    Image(
-        painter = painterResource(id = R.drawable.cosmopolitan),
-        contentDescription = "Cosmopolitan",
-        contentScale = ContentScale.FillBounds,
+fun DrinkView(drinkName: String, imageUrl: String?) {
+    AsyncImage(
+        model = imageUrl,
+        contentDescription = drinkName,
+        contentScale = ContentScale.Crop,
+        placeholder = painterResource(id = R.drawable.cosmopolitan),
+        error = painterResource(id = R.drawable.cosmopolitan),
         modifier = Modifier
-            .width(300.dp)
-            .height(300.dp)
+            .width(150.dp)
+            .height(150.dp)
             .clip(CircleShape)
-            .border(
-                2.dp,
-                colorResource(R.color.white),
-                CircleShape
-            )
+            .border(2.dp, colorResource(R.color.white), CircleShape)
     )
     Text(
         drinkName,
-        fontSize = 40.sp,
+        fontSize = 28.sp,
         color = colorResource(R.color.white)
     )
 }
 
 @Composable
-fun GlassTypeView(glassType: GlassType) {
-    Row() {
+fun GlassTypeView(glassType: String) {
+    Row {
         Icon(
             painter = painterResource(R.drawable.glass),
             contentDescription = "glass",
             modifier = Modifier
-                .width(30.dp)
-                .height(30.dp)
+                .width(18.dp)
+                .height(18.dp)
         )
-
-        Text(glassType.name)
+        Text(glassType)
     }
 }
 
 @Composable
-fun CategoryView(category: Category) {
+fun CategoryView(category: String) {
     Box(
         Modifier
             .clip(CircleShape)
-            .border(
-                2.dp,
-                colorResource(R.color.white),
-                CircleShape
-            )
+            .border(2.dp, colorResource(R.color.white), CircleShape)
             .background(
                 Brush.horizontalGradient(
                     listOf(
@@ -174,9 +205,8 @@ fun CategoryView(category: Category) {
                 )
             )
     ) {
-
         Text(
-            category.name,
+            category,
             fontSize = 20.sp,
             color = colorResource(R.color.white)
         )
@@ -184,36 +214,25 @@ fun CategoryView(category: Category) {
 }
 
 @Composable
-fun Categories(categories: List<Category>) {
-    Row() {
-        categories.forEach { category ->
-            CategoryView(category)
-        }
+fun Categories(categories: List<String>) {
+    Row {
+        categories.forEach { category -> CategoryView(category) }
     }
 }
 
 @Composable
-fun IngredientView(ingredient: Ingredient) {
-    Row() {
-        Text(ingredient.name)
-        Text(ingredient.amount.toString())
-        Text(ingredient.unit.name)
+fun IngredientView(ingredient: Pair<String, String>) {
+    Row {
+        Text(ingredient.first)
+        Text(ingredient.second)
     }
 }
 
 @Composable
-fun Ingredients(ingredients: List<Ingredient>) {
+fun Ingredients(ingredients: List<Pair<String, String>>) {
     val padding = 10.dp
-    Column() {
-        Card(
-            Modifier
-//            .border(
-//                2.dp,
-//                colorResource(R.color.white)
-//            )
-//            .verticalScroll(rememberScrollState())
-                .fillMaxWidth()
-        ) {
+    Column {
+        Card(Modifier.fillMaxWidth()) {
             Text(
                 text = "Ingredients",
                 modifier = Modifier.padding(15.dp),
@@ -228,17 +247,8 @@ fun Ingredients(ingredients: List<Ingredient>) {
 
 @Composable
 fun Preparation(preparation: String) {
-    val padding = 10.dp
-    Column() {
-        Card(
-            Modifier
-//            .border(
-//                2.dp,
-//                colorResource(R.color.white)
-//            )
-//            .verticalScroll(rememberScrollState())
-                .fillMaxWidth()
-        ) {
+    Column {
+        Card(Modifier.fillMaxWidth()) {
             Text(
                 text = preparation,
                 modifier = Modifier.padding(15.dp)

@@ -14,12 +14,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
-import fr.emajasekova.thegreatestcocktailapp.models.Category
-import fr.emajasekova.thegreatestcocktailapp.models.GlassType
 import fr.emajasekova.thegreatestcocktailapp.screens.DetailCocktailScreen
 import fr.emajasekova.thegreatestcocktailapp.ui.theme.TheGreatestCocktailAppTheme
 
 class DetailCocktailActivity : ComponentActivity() {
+
+    companion object {
+        const val DRINKID = "DRINK_ID"
+    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,13 +43,9 @@ class DetailCocktailActivity : ComponentActivity() {
                     },
                     modifier = Modifier.fillMaxSize()) { innerPadding ->
                     DetailCocktailScreen(
-                        drinkId=drinkId,
+                        drinkId = drinkId,
+                        onComposing = { appBarState.value = it },
                         modifier = Modifier.padding(innerPadding),
-                        "Cosmopolitan",
-                        listOf(Category.ALCOHOLIC, Category.COLD),
-                        GlassType.SMALL,
-                        cosmopolitanIngredients,
-                        "Description how to prepare the cocktail very very very very very very long description to span multiple lines to test scrolling"
                     )
                 }
             }
