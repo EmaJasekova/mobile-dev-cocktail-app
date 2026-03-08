@@ -14,7 +14,7 @@ interface ApiService {
     suspend fun getRandomCocktail(): CocktailResponse
 
     @GET("list.php?c=list")
-    fun getCategories(): Call<CategoryListResponse>
+    suspend fun getCategories(): CategoryListResponse
 
     @GET("filter.php")
     fun getCocktailsPreview(@Query("c") categoryID: String): Call<CocktailFilterResponse>

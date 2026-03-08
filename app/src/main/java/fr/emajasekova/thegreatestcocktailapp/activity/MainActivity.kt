@@ -25,10 +25,6 @@ import androidx.navigation.compose.rememberNavController
 import fr.emajasekova.thegreatestcocktailapp.R
 import fr.emajasekova.thegreatestcocktailapp.components.TabBarItem
 import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
-import fr.emajasekova.thegreatestcocktailapp.models.Category
-import fr.emajasekova.thegreatestcocktailapp.models.GlassType
-import fr.emajasekova.thegreatestcocktailapp.models.Ingredient
-import fr.emajasekova.thegreatestcocktailapp.models.IngredientUnit
 import fr.emajasekova.thegreatestcocktailapp.screens.navigation.BottomBar
 import fr.emajasekova.thegreatestcocktailapp.screens.CategoriesScreen
 import fr.emajasekova.thegreatestcocktailapp.screens.DetailCocktailScreen
@@ -70,15 +66,6 @@ class MainActivity : ComponentActivity() {
 
             val tabItems = listOf(randomItem, categoryItem, favouriteItem)
 
-            val cosmopolitanIngredients = listOf(
-                Ingredient("Citron Vodka", 40.0, IngredientUnit.ML),
-                Ingredient("Cointreau (Orange Liqueur)", 15.0, IngredientUnit.ML),
-                Ingredient("Fresh Lime Juice", 15.0, IngredientUnit.ML),
-                Ingredient("Cranberry Juice", 30.0, IngredientUnit.ML),
-                Ingredient("Orange Zest", 2.0, IngredientUnit.GRAM),
-                Ingredient("Citron Vodka", 40.0, IngredientUnit.ML)
-            )
-
             TheGreatestCocktailAppTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -97,8 +84,8 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(categoryItem.title) {
                             CategoriesScreen(
-                                Modifier.padding(innerPadding),
-                                listOf(Category.COLD, Category.HOT, Category.ALCOHOLIC, Category.NONALCOHOLIC)
+                                modifier = Modifier.padding(innerPadding),
+                                onComposing = { appBarState.value = it }
                             )
                         }
                         composable(favouriteItem.title) {
