@@ -17,5 +17,5 @@ interface ApiService {
     fun getCocktailsPreview(@Query("c") categoryID: String): Call<CocktailFilterResponse>
 
     @GET("lookup.php")
-    suspend fun getDetailCocktail(@Query("i") drinkID: String): CocktailResponse
+    suspend fun getDetailCocktail(@Query("i") cocktailId: String): CocktailResponse
 }

@@ -5,15 +5,15 @@ import fr.emajasekova.thegreatestcocktailapp.dataClasses.dto.CocktailDto
 import fr.emajasekova.thegreatestcocktailapp.dataClasses.dto.CocktailPreviewDto
 
 fun CocktailDto.toCocktail(): Cocktail? {
-    val id = idDrink ?: return null
+    val id = idCocktail ?: return null
     return Cocktail(
         id = id,
-        name = strDrink ?: "",
+        name = strCocktail ?: "",
         category = strCategory,
         alcoholic = strAlcoholic,
         glass = strGlass,
         instructions = strInstructions,
-        thumbnailUrl = strDrinkThumb,
+        thumbnailUrl = strCocktailThumb,
         ingredients = toIngredients(),
     )
 }
@@ -35,11 +35,11 @@ private fun CocktailDto.toIngredients(): List<Ingredient> {
 }
 
 fun CocktailPreviewDto.toCocktailPreview(): CocktailPreview? {
-    val id = idDrink ?: return null
+    val id = idCocktail ?: return null
     return CocktailPreview(
         id = id,
-        name = strDrink ?: "",
-        thumbnailUrl = strDrinkThumb,
+        name = strCocktail ?: "",
+        thumbnailUrl = strCocktailThumb,
     )
 }
 

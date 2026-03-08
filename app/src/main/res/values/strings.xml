@@ -2,5 +2,5 @@
     <string name="app_name">TheGreatestCocktailApp</string>
     <string name="tab_item_random">Random</string>
     <string name="tab_item_category">Categories</string>
-    <string name="tab_item_favorite">Favourites</string>
+    <string name="tab_item_favourite">Favourites</string>
 </resources>

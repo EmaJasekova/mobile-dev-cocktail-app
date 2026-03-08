@@ -22,7 +22,7 @@ import fr.emajasekova.thegreatestcocktailapp.ui.theme.TheGreatestCocktailAppThem
 class DetailCocktailActivity : ComponentActivity() {
 
     companion object {
-        const val DRINKID = "DRINK_ID"
+        const val COCKTAILID = "COCKTAIL_ID"
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +30,7 @@ class DetailCocktailActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val drinkId = intent.getStringExtra(DRINKID) ?: ""
+        val cocktailId = intent.getStringExtra(COCKTAILID) ?: ""
 
         setContent {
             val appBarState = remember { mutableStateOf(AppBarState()) }
@@ -51,7 +51,7 @@ class DetailCocktailActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
                     DetailCocktailScreen(
-                        drinkId = drinkId,
+                        cocktailId = cocktailId,
                         onComposing = { appBarState.value = it },
                         modifier = Modifier.padding(innerPadding),
                     )

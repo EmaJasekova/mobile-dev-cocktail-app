@@ -40,14 +40,14 @@ import androidx.lifecycle.LifecycleEventObserver
 import coil3.compose.AsyncImage
 import fr.emajasekova.thegreatestcocktailapp.R
 import fr.emajasekova.thegreatestcocktailapp.activity.DetailCocktailActivity
-import fr.emajasekova.thegreatestcocktailapp.managers.FavoriteCocktail
-import fr.emajasekova.thegreatestcocktailapp.managers.FavoritesManager
+import fr.emajasekova.thegreatestcocktailapp.managers.FavouriteCocktail
+import fr.emajasekova.thegreatestcocktailapp.managers.FavouritesManager
 import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
 
 @Composable
 fun FavouritesScreen(modifier: Modifier, onComposing: (AppBarState) -> Unit) {
     val context = LocalContext.current
-    var favorites by remember { mutableStateOf(FavoritesManager.getFavorites(context)) }
+    var favourites by remember { mutableStateOf(FavouritesManager.getFavourites(context)) }
 
     LaunchedEffect(Unit) {
         onComposing(AppBarState(title = "Favourites"))
@@ -57,7 +57,7 @@ fun FavouritesScreen(modifier: Modifier, onComposing: (AppBarState) -> Unit) {
     DisposableEffect(activity) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                favorites = FavoritesManager.getFavorites(context)
+                favourites = FavouritesManager.getFavourites(context)
             }
         }
         activity?.lifecycle?.addObserver(observer)
@@ -70,7 +70,7 @@ fun FavouritesScreen(modifier: Modifier, onComposing: (AppBarState) -> Unit) {
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        if (favorites.isEmpty()) {
+        if (favourites.isEmpty()) {
             Text(
                 text = "No favourites yet.",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -82,10 +82,10 @@ fun FavouritesScreen(modifier: Modifier, onComposing: (AppBarState) -> Unit) {
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                items(favorites) { cocktail ->
+                items(favourites) { cocktail ->
                     FavouriteListCard(cocktail) {
                         val intent = Intent(context, DetailCocktailActivity::class.java)
-                        intent.putExtra(DetailCocktailActivity.DRINKID, cocktail.idDrink)
+                        intent.putExtra(DetailCocktailActivity.COCKTAILID, cocktail.idCocktail)
                         context.startActivity(intent)
                     }
                 }
@@ -95,7 +95,7 @@ fun FavouritesScreen(modifier: Modifier, onComposing: (AppBarState) -> Unit) {
 }
 
 @Composable
-private fun FavouriteListCard(cocktail: FavoriteCocktail, onClick: () -> Unit) {
+private fun FavouriteListCard(cocktail: FavouriteCocktail, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -112,8 +112,8 @@ private fun FavouriteListCard(cocktail: FavoriteCocktail, onClick: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             AsyncImage(
-                model = cocktail.strDrinkThumb,
-                contentDescription = cocktail.strDrink,
+                model = cocktail.strCocktailThumb,
+                contentDescription = cocktail.strCocktail,
                 placeholder = painterResource(R.drawable.cosmopolitan),
                 error = painterResource(R.drawable.cosmopolitan),
                 modifier = Modifier
@@ -121,7 +121,7 @@ private fun FavouriteListCard(cocktail: FavoriteCocktail, onClick: () -> Unit) {
                     .clip(CircleShape)
             )
             Text(
-                text = cocktail.strDrink,
+                text = cocktail.strCocktail,
                 modifier = Modifier.weight(1f),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,

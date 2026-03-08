@@ -89,7 +89,7 @@ fun CocktailsScreen(modifier: Modifier, category: String) {
                 items(cocktails) { cocktail ->
                     CocktailListCard(cocktail) {
                         val intent = Intent(context, DetailCocktailActivity::class.java)
-                        intent.putExtra(DetailCocktailActivity.DRINKID, cocktail.id)
+                        intent.putExtra(DetailCocktailActivity.COCKTAILID, cocktail.id)
                         context.startActivity(intent)
                     }
                 }

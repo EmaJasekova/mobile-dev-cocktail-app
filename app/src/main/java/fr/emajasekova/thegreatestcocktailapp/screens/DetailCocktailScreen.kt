@@ -59,12 +59,12 @@ fun loadCocktail(key: Any, fetch: suspend () -> Cocktail?): CocktailState =
 
 @Composable
 fun DetailCocktailScreen(
-    drinkId: String,
+    cocktailId: String,
     onComposing: (AppBarState) -> Unit,
     modifier: Modifier,
 ) {
-    val state = loadCocktail(drinkId) {
-        ApiClient.retrofit.getDetailCocktail(drinkId).cocktails?.firstOrNull()?.toCocktail()
+    val state = loadCocktail(cocktailId) {
+        ApiClient.retrofit.getDetailCocktail(cocktailId).cocktails?.firstOrNull()?.toCocktail()
     }
 
     LaunchedEffect(state.cocktail) {
@@ -105,7 +105,7 @@ fun CocktailDetailContent(
                 verticalArrangement = Arrangement.Top
             ) {
                 Spacer(Modifier.size(padding))
-                DrinkView(cocktail.name, cocktail.thumbnailUrl)
+                CocktailView(cocktail.name, cocktail.thumbnailUrl)
 
                 Spacer(Modifier.size(padding))
                 Categories(listOfNotNull(cocktail.category, cocktail.alcoholic))
@@ -132,10 +132,10 @@ fun CocktailDetailContent(
 }
 
 @Composable
-fun DrinkView(drinkName: String, imageUrl: String?) {
+fun CocktailView(cocktailName: String, imageUrl: String?) {
     AsyncImage(
         model = imageUrl,
-        contentDescription = drinkName,
+        contentDescription = cocktailName,
         contentScale = ContentScale.Crop,
         placeholder = painterResource(id = R.drawable.cosmopolitan),
         error = painterResource(id = R.drawable.cosmopolitan),
@@ -146,7 +146,7 @@ fun DrinkView(drinkName: String, imageUrl: String?) {
     )
     Spacer(Modifier.height(10.dp))
     Text(
-        drinkName,
+        cocktailName,
         fontSize = 26.sp,
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onBackground

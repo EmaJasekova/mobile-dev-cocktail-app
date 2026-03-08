@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
             )
 
             val favouriteItem = TabBarItem(
-                stringResource(R.string.tab_item_favorite),
+                stringResource(R.string.tab_item_favourite),
                 Icons.Filled.Favorite,
                 Icons.Outlined.Favorite
             )

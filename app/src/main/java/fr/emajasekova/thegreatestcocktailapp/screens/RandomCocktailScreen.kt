@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import fr.emajasekova.thegreatestcocktailapp.dataClasses.Cocktail
 import fr.emajasekova.thegreatestcocktailapp.dataClasses.toCocktail
-import fr.emajasekova.thegreatestcocktailapp.managers.FavoritesManager
+import fr.emajasekova.thegreatestcocktailapp.managers.FavouritesManager
 import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
 import fr.emajasekova.thegreatestcocktailapp.network.ApiClient
 
@@ -44,24 +44,24 @@ fun RandomCocktailScreen(modifier: Modifier, onComposing: (AppBarState) -> Unit)
 @Composable
 fun DetailCocktailTopButton(cocktail: Cocktail?) {
     val context = LocalContext.current
-    var isFavorite by remember(cocktail?.id) {
+    var isFavourite by remember(cocktail?.id) {
         mutableStateOf(
-            cocktail?.id?.let { FavoritesManager.isFavorite(context, it) } ?: false
+            cocktail?.id?.let { FavouritesManager.isFavourite(context, it) } ?: false
         )
     }
 
     IconButton(
         onClick = {
             cocktail?.let {
-                FavoritesManager.toggleFavorite(context, it)
-                isFavorite = !isFavorite
+                FavouritesManager.toggleFavourite(context, it)
+                isFavourite = !isFavourite
             }
         },
         enabled = cocktail != null
     ) {
         Icon(
-            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-            contentDescription = if (isFavorite) "Remove from favourites" else "Add to favourites"
+            imageVector = if (isFavourite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+            contentDescription = if (isFavourite) "Remove from favourites" else "Add to favourites"
         )
     }
 }

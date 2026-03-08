@@ -3,13 +3,13 @@ package fr.emajasekova.thegreatestcocktailapp.dataClasses.dto
 import com.google.gson.annotations.SerializedName
 
 data class CocktailDto(
-    @SerializedName("idDrink")         val idDrink: String?,
-    @SerializedName("strDrink")        val strDrink: String?,
+    @SerializedName("idDrink")         val idCocktail: String?,
+    @SerializedName("strDrink")        val strCocktail: String?,
     @SerializedName("strCategory")     val strCategory: String?,
     @SerializedName("strAlcoholic")    val strAlcoholic: String?,
     @SerializedName("strGlass")        val strGlass: String?,
     @SerializedName("strInstructions") val strInstructions: String?,
-    @SerializedName("strDrinkThumb")   val strDrinkThumb: String?,
+    @SerializedName("strDrinkThumb")   val strCocktailThumb: String?,
 
     @SerializedName("strIngredient1")  val strIngredient1: String?,
     @SerializedName("strIngredient2")  val strIngredient2: String?,
