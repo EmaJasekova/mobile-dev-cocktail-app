@@ -14,6 +14,8 @@ import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -22,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import fr.emajasekova.thegreatestcocktailapp.R
 import fr.emajasekova.thegreatestcocktailapp.components.TabBarItem
+import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
 import fr.emajasekova.thegreatestcocktailapp.models.Category
 import fr.emajasekova.thegreatestcocktailapp.models.GlassType
 import fr.emajasekova.thegreatestcocktailapp.models.Ingredient
@@ -30,6 +33,7 @@ import fr.emajasekova.thegreatestcocktailapp.screens.navigation.BottomBar
 import fr.emajasekova.thegreatestcocktailapp.screens.CategoriesScreen
 import fr.emajasekova.thegreatestcocktailapp.screens.DetailCocktailScreen
 import fr.emajasekova.thegreatestcocktailapp.screens.FavouritesScreen
+import fr.emajasekova.thegreatestcocktailapp.screens.RandomCocktailScreen
 import fr.emajasekova.thegreatestcocktailapp.screens.navigation.TopBar
 
 import fr.emajasekova.thegreatestcocktailapp.ui.theme.TheGreatestCocktailAppTheme
@@ -43,6 +47,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val navController = rememberNavController()
+
+            val appBarState = remember { mutableStateOf(AppBarState()) }
 
             val randomItem = TabBarItem(
                 stringResource(R.string.tab_item_random),
@@ -81,13 +87,12 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(navController, startDestination = randomItem.title) {
                         composable(randomItem.title) {
-                            DetailCocktailScreen(
-                                modifier = Modifier.padding(innerPadding),
-                                "Cosmopolitan",
-                                listOf(Category.ALCOHOLIC, Category.COLD),
-                                GlassType.SMALL,
-                                cosmopolitanIngredients,
-                                "Description how to prepare the cocktail very very very very very very long description to span multiple lines to test scrolling"
+                            RandomCocktailScreen (
+                                Modifier.padding(innerPadding),
+                                {
+                                    topBar ->
+                                        appBarState.value = topBar
+                                }
                             )
                         }
                         composable(categoryItem.title) {

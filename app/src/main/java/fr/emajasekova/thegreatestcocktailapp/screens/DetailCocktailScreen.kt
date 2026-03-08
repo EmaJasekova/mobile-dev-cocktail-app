@@ -22,6 +22,8 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,16 +37,17 @@ import fr.emajasekova.thegreatestcocktailapp.models.Category
 import fr.emajasekova.thegreatestcocktailapp.models.GlassType
 import fr.emajasekova.thegreatestcocktailapp.models.Ingredient
 import fr.emajasekova.thegreatestcocktailapp.R
+import fr.emajasekova.thegreatestcocktailapp.dataClasses.Cocktail
+import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
 
 @Composable
 fun DetailCocktailScreen(
+    drinkId: String,
+    onComposing: (AppBarState) -> Unit,
     modifier: Modifier,
-    drinkName: String,
-    categories: List<Category>,
-    glassType: GlassType,
-    ingredients: List<Ingredient>,
-    preparation: String
 ) {
+    var drink = remember { mutableStateOf<Cocktail?>(null) }
+
     val padding = 20.dp
     Box(
         Modifier

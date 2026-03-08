@@ -1,40 +1,47 @@
 package fr.emajasekova.thegreatestcocktailapp.activity
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
 import fr.emajasekova.thegreatestcocktailapp.models.Category
 import fr.emajasekova.thegreatestcocktailapp.models.GlassType
-import fr.emajasekova.thegreatestcocktailapp.models.Ingredient
-import fr.emajasekova.thegreatestcocktailapp.models.IngredientUnit
 import fr.emajasekova.thegreatestcocktailapp.screens.DetailCocktailScreen
 import fr.emajasekova.thegreatestcocktailapp.ui.theme.TheGreatestCocktailAppTheme
 
 class DetailCocktailActivity : ComponentActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    @OptIn(ExperimentalMaterial3Api::class)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val cosmopolitanIngredients = listOf(
-            Ingredient("Citron Vodka", 40.0, IngredientUnit.ML),
-            Ingredient("Cointreau (Orange Liqueur)", 15.0, IngredientUnit.ML),
-            Ingredient("Fresh Lime Juice", 15.0, IngredientUnit.ML),
-            Ingredient("Cranberry Juice", 30.0, IngredientUnit.ML),
-            Ingredient("Orange Zest", 2.0, IngredientUnit.GRAM),
-            Ingredient("Citron Vodka", 40.0, IngredientUnit.ML)
-        )
+        val drinkId = intent.getStringExtra(DRINKID) ?: ""
 
         setContent {
+            val appBarState = remember { mutableStateOf(AppBarState()) }
+
             TheGreatestCocktailAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            { Text(appBarState.value.title) },
+                                actions = { appBarState.value.actions?.invoke(this) }
+                        )
+                    },
+                    modifier = Modifier.fillMaxSize()) { innerPadding ->
                     DetailCocktailScreen(
+                        drinkId=drinkId,
                         modifier = Modifier.padding(innerPadding),
                         "Cosmopolitan",
                         listOf(Category.ALCOHOLIC, Category.COLD),
