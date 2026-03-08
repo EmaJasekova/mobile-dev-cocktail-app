@@ -7,9 +7,6 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-//    @GET("random.php")
-//    fun getRandomCocktail(): Call<CocktailResponse>
-
     @GET("random.php")
     suspend fun getRandomCocktail(): CocktailResponse
 

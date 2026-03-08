@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,8 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -27,9 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -66,58 +67,49 @@ fun FavouritesScreen(modifier: Modifier, onComposing: (AppBarState) -> Unit) {
     Box(
         modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        colorResource(R.color.black),
-                        colorResource(R.color.purple_700)
-                    )
-                )
-            ),
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         if (favorites.isEmpty()) {
             Text(
                 text = "No favourites yet.",
-                color = colorResource(R.color.white),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 16.sp
             )
         } else {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                item { }
                 items(favorites) { cocktail ->
-                    FavoriteCocktailCard(cocktail) {
+                    FavouriteListCard(cocktail) {
                         val intent = Intent(context, DetailCocktailActivity::class.java)
                         intent.putExtra(DetailCocktailActivity.DRINKID, cocktail.idDrink)
                         context.startActivity(intent)
                     }
                 }
-                item { }
             }
         }
     }
 }
 
 @Composable
-private fun FavoriteCocktailCard(cocktail: FavoriteCocktail, onClick: () -> Unit) {
+private fun FavouriteListCard(cocktail: FavoriteCocktail, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.purple_700).copy(alpha = 0.6f)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             AsyncImage(
                 model = cocktail.strDrinkThumb,
@@ -125,17 +117,21 @@ private fun FavoriteCocktailCard(cocktail: FavoriteCocktail, onClick: () -> Unit
                 placeholder = painterResource(R.drawable.cosmopolitan),
                 error = painterResource(R.drawable.cosmopolitan),
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(56.dp)
                     .clip(CircleShape)
             )
             Text(
                 text = cocktail.strDrink,
-                modifier = Modifier
-                    .padding(start = 16.dp)
-                    .weight(1f),
-                fontSize = 18.sp,
+                modifier = Modifier.weight(1f),
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
-                color = colorResource(R.color.white)
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = "›",
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Light
             )
         }
     }

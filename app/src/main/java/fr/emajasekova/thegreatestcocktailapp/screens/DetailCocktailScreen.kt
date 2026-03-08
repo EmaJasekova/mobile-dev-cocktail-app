@@ -15,10 +15,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,10 +31,10 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -86,18 +91,10 @@ fun CocktailDetailContent(
 
     Box(
         modifier
-            .background(
-                brush = Brush.verticalGradient(
-                    listOf(
-                        colorResource(R.color.black),
-                        colorResource(R.color.purple_700)
-                    )
-                )
-            )
+            .background(MaterialTheme.colorScheme.background)
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-
         when {
             loading -> CircularProgressIndicator()
             cocktail != null -> Column(
@@ -111,7 +108,7 @@ fun CocktailDetailContent(
                 Spacer(Modifier.size(padding))
                 Categories(listOfNotNull(cocktail.strCategory, cocktail.strAlcoholic))
 
-                Spacer(Modifier.size(padding))
+                Spacer(Modifier.size(12.dp))
                 GlassTypeView(cocktail.strGlass ?: "")
                 Spacer(Modifier.size(8.dp))
 
@@ -141,82 +138,113 @@ fun DrinkView(drinkName: String, imageUrl: String?) {
         placeholder = painterResource(id = R.drawable.cosmopolitan),
         error = painterResource(id = R.drawable.cosmopolitan),
         modifier = Modifier
-            .width(150.dp)
-            .height(150.dp)
+            .size(150.dp)
             .clip(CircleShape)
-            .border(2.dp, colorResource(R.color.white), CircleShape)
+            .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
     )
+    Spacer(Modifier.height(10.dp))
     Text(
         drinkName,
-        fontSize = 28.sp,
-        color = colorResource(R.color.white)
+        fontSize = 26.sp,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onBackground
     )
 }
 
 @Composable
 fun GlassTypeView(glassType: String) {
-    Row {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
         Icon(
             painter = painterResource(R.drawable.glass),
             contentDescription = "glass",
-            modifier = Modifier
-                .width(18.dp)
-                .height(18.dp)
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(16.dp)
         )
-        Text(glassType)
+        Text(
+            glassType,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 14.sp
+        )
     }
 }
 
 @Composable
-fun CategoryView(category: String) {
-    Box(
-        Modifier
-            .clip(CircleShape)
-            .border(2.dp, colorResource(R.color.white), CircleShape)
-            .background(
-                Brush.horizontalGradient(
-                    listOf(
-                        colorResource(R.color.teal_200),
-                        colorResource(R.color.teal_700)
-                    )
-                )
-            )
+fun CategoryChip(label: String, containerColor: Color) {
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = containerColor,
     ) {
         Text(
-            category,
-            fontSize = 20.sp,
-            color = colorResource(R.color.white)
+            label,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+            fontSize = 13.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.background
         )
     }
 }
 
 @Composable
 fun Categories(categories: List<String>) {
-    Row {
-        categories.forEach { category -> CategoryView(category) }
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        categories.forEachIndexed { index, category ->
+            val chipColor = if (index == 0) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.secondary
+            CategoryChip(category, chipColor)
+        }
     }
 }
 
 @Composable
-fun IngredientView(ingredient: Pair<String, String>) {
-    Row {
-        Text(ingredient.first)
-        Text(ingredient.second)
+fun IngredientRow(ingredient: Pair<String, String>) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            ingredient.first,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 15.sp
+        )
+        Text(
+            ingredient.second,
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium
+        )
     }
 }
 
 @Composable
 fun Ingredients(ingredients: List<Pair<String, String>>) {
-    val padding = 10.dp
-    Column {
-        Card(Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(0.dp)
+    ) {
+        Column(Modifier.padding(top = 14.dp, bottom = 8.dp)) {
             Text(
-                text = "Ingredients",
-                modifier = Modifier.padding(15.dp),
+                "Ingredients",
+                modifier = Modifier.padding(horizontal = 16.dp),
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.primary
             )
+            Spacer(Modifier.height(8.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
             ingredients.forEach { ingredient ->
-                IngredientView(ingredient)
-                Spacer(Modifier.size(padding))
+                IngredientRow(ingredient)
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                )
             }
         }
     }
@@ -224,11 +252,25 @@ fun Ingredients(ingredients: List<Pair<String, String>>) {
 
 @Composable
 fun Preparation(preparation: String) {
-    Column {
-        Card(Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(0.dp)
+    ) {
+        Column(Modifier.padding(16.dp)) {
             Text(
-                text = preparation,
-                modifier = Modifier.padding(15.dp)
+                "Instructions",
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(Modifier.height(10.dp))
+            Text(
+                preparation,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 14.sp,
+                lineHeight = 22.sp
             )
         }
     }

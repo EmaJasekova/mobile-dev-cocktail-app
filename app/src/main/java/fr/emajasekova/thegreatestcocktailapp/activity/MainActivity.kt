@@ -14,6 +14,7 @@ import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -77,7 +78,9 @@ class MainActivity : ComponentActivity() {
                             title = { if (visible) Text(appBarState.value.title) },
                             actions = { if (visible) appBarState.value.actions?.invoke(this) },
                             colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = if (visible) Color.Unspecified else Color.Transparent
+                                containerColor = if (visible) MaterialTheme.colorScheme.surface else Color.Transparent,
+                                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                                actionIconContentColor = MaterialTheme.colorScheme.primary
                             )
                         )
                     },
