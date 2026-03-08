@@ -13,11 +13,15 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,21 +31,19 @@ import fr.emajasekova.thegreatestcocktailapp.components.TabBarItem
 import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
 import fr.emajasekova.thegreatestcocktailapp.screens.navigation.BottomBar
 import fr.emajasekova.thegreatestcocktailapp.screens.CategoriesScreen
-import fr.emajasekova.thegreatestcocktailapp.screens.DetailCocktailScreen
 import fr.emajasekova.thegreatestcocktailapp.screens.FavouritesScreen
 import fr.emajasekova.thegreatestcocktailapp.screens.RandomCocktailScreen
-import fr.emajasekova.thegreatestcocktailapp.screens.navigation.TopBar
 
 import fr.emajasekova.thegreatestcocktailapp.ui.theme.TheGreatestCocktailAppTheme
 
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContent {
-            val context = LocalContext.current
             val navController = rememberNavController()
 
             val appBarState = remember { mutableStateOf(AppBarState()) }
@@ -69,7 +71,16 @@ class MainActivity : ComponentActivity() {
             TheGreatestCocktailAppTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    topBar = { TopBar(context) },
+                    topBar = {
+                        val visible = appBarState.value.visible
+                        TopAppBar(
+                            title = { if (visible) Text(appBarState.value.title) },
+                            actions = { if (visible) appBarState.value.actions?.invoke(this) },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = if (visible) Color.Unspecified else Color.Transparent
+                            )
+                        )
+                    },
                     bottomBar = { BottomBar(navController, tabItems) }
                 ) { innerPadding ->
                     NavHost(navController, startDestination = randomItem.title) {
@@ -90,7 +101,8 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(favouriteItem.title) {
                             FavouritesScreen(
-                                Modifier.padding(innerPadding)
+                                modifier = Modifier.padding(innerPadding),
+                                onComposing = { appBarState.value = it }
                             )
                         }
                     }

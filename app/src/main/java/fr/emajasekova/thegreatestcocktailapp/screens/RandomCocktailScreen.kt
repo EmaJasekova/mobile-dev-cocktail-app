@@ -1,15 +1,20 @@
 package fr.emajasekova.thegreatestcocktailapp.screens
 
-import android.widget.Toast
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import fr.emajasekova.thegreatestcocktailapp.dataClasses.Cocktail
+import fr.emajasekova.thegreatestcocktailapp.managers.FavoritesManager
 import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
 import fr.emajasekova.thegreatestcocktailapp.network.ApiClient
 
@@ -19,7 +24,7 @@ fun RandomCocktailScreen(modifier: Modifier, onComposing: (AppBarState) -> Unit)
         ApiClient.retrofit.getRandomCocktail().cocktails?.firstOrNull()
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(state.cocktail) {
         onComposing(
             AppBarState(
                 title = "Random Cocktail",
@@ -38,13 +43,24 @@ fun RandomCocktailScreen(modifier: Modifier, onComposing: (AppBarState) -> Unit)
 @Composable
 fun DetailCocktailTopButton(cocktail: Cocktail?) {
     val context = LocalContext.current
+    var isFavorite by remember(cocktail?.idCocktail) {
+        mutableStateOf(
+            cocktail?.idCocktail?.let { FavoritesManager.isFavorite(context, it) } ?: false
+        )
+    }
 
-    IconButton({
-        Toast.makeText(context, "Add to favourites", Toast.LENGTH_LONG).show()
-    }) {
+    IconButton(
+        onClick = {
+            cocktail?.let {
+                FavoritesManager.toggleFavorite(context, it)
+                isFavorite = !isFavorite
+            }
+        },
+        enabled = cocktail != null
+    ) {
         Icon(
-            imageVector = Icons.Filled.FavoriteBorder,
-            contentDescription = "Add to favourites"
+            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+            contentDescription = if (isFavorite) "Remove from favourites" else "Add to favourites"
         )
     }
 }

@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,8 +31,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import fr.emajasekova.thegreatestcocktailapp.R
 import fr.emajasekova.thegreatestcocktailapp.dataClasses.Cocktail
 import fr.emajasekova.thegreatestcocktailapp.models.AppBarState
@@ -62,14 +61,18 @@ fun DetailCocktailScreen(
     }
 
     LaunchedEffect(state.cocktail) {
-        state.cocktail?.let { onComposing(AppBarState(title = it.strCocktail ?: "")) }
+        state.cocktail?.let {
+            onComposing(AppBarState(
+                title = it.strCocktail ?: "",
+                actions = { DetailCocktailTopButton(state.cocktail) }
+            ))
+        }
     }
 
     CocktailDetailContent(
         cocktail = state.cocktail,
         loading = state.loading,
         modifier = modifier,
-        overlayContent = { TopIcons() }
     )
 }
 
@@ -78,7 +81,6 @@ fun CocktailDetailContent(
     cocktail: Cocktail?,
     loading: Boolean,
     modifier: Modifier = Modifier,
-    overlayContent: @Composable () -> Unit = {},
 ) {
     val padding = 20.dp
 
@@ -95,7 +97,6 @@ fun CocktailDetailContent(
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        overlayContent()
 
         when {
             loading -> CircularProgressIndicator()
@@ -128,30 +129,6 @@ fun CocktailDetailContent(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun TopIcons() {
-    Row(
-        Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End
-    ) {
-        ButtonWithIcon(R.drawable.reload, "reload", {})
-        ButtonWithIcon(R.drawable.heart, "heart", {})
-    }
-}
-
-@Composable
-fun ButtonWithIcon(iconId: Int, iconDescription: String, onClick: () -> Unit) {
-    ElevatedButton(onClick = { onClick() }) {
-        Icon(
-            painter = painterResource(iconId),
-            contentDescription = iconDescription,
-            modifier = Modifier
-                .width(25.dp)
-                .height(25.dp)
-        )
     }
 }
 
